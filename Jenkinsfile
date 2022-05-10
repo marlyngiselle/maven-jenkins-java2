@@ -16,7 +16,7 @@ pipeline {
                 sh 'mvn clean install'
                 sh 'docker stop contenedor'
                 sh 'docker rm contenedor'
-                sh 'docker build -t mgiselle/${miapp}:v${BUILD_NUMBER} .'
+                sh 'docker build -t mgiselle/${JOB_NAME}:v${BUILD_NUMBER} .'
             }
         }
 
@@ -28,18 +28,18 @@ pipeline {
 
         stage('Release') {
             steps {
-                sh 'docker tag mgiselle/${miapp}:v${BUILD_NUMBER} mgiselle/${miapp}:latest'
+                sh 'docker tag mgiselle/${JOB_NAME}:v${BUILD_NUMBER} mgiselle/${JOB_NAME}:latest'
                 sh 'docker login -u="mgiselle" -p="Tasia.2411"'
-                sh 'docker push mgiselle/${miapp}:v${BUILD_NUMBER}'
-                sh 'docker push mgiselle/${miapp}:latest'
-                sh 'docker rmi mgiselle/${miapp}:v${BUILD_NUMBER}'
-                sh 'docker rmi mgiselle/${miapp}:latest'
+                sh 'docker push mgiselle/${JOB_NAME}:v${BUILD_NUMBER}'
+                sh 'docker push mgiselle/${JOB_NAME}:latest'
+                sh 'docker rmi mgiselle/${JOB_NAME}:v${BUILD_NUMBER}'
+                sh 'docker rmi mgiselle/${JOB_NAME}:latest'
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'docker run -d -p 80:8080 --name contenedor mgiselle/${miapp}:latest'
+                sh 'docker run -d -p 80:8080 --name contenedor mgiselle/${JOB_NAME}:latest'
             }
         }
 
